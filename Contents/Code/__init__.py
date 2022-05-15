@@ -10,7 +10,7 @@ from nfo_descriptor_file import NfoDescriptorFile
 
 
 BUNDLE_NAME = "PlexNFO"
-BUNDLE_VERSION = "0.2-255"
+BUNDLE_VERSION = "1.0-001"
 
 
 # PLEX Stuff
@@ -35,8 +35,6 @@ def Start():
     log('Preference[debug]: %s', preferences['debug'])
     
     return
-
-
 
 
 class PLEXNFO(PlexMovieAgent):
@@ -200,7 +198,7 @@ class PLEXNFO(PlexMovieAgent):
         log('Sort Tagline: %s', metadata.tagline)
         log('Sort Summary: %s', metadata.summary)
         log('Year: %s', metadata.year)
-        log('Premiere: %s', metadata.originally_available_at.strftime('%Y-%m-%d'))
+        log('Premiere: %s', metadata.originally_available_at) #.strftime('%Y-%m-%d')
         log('Studio: %s', metadata.studio)
         log('Duration(min): %s', metadata.duration / 60000)
         log('Content Rating: %s', metadata.content_rating)
@@ -211,5 +209,4 @@ class PLEXNFO(PlexMovieAgent):
         log('Countries: %s', [str(country) for country in metadata.countries])
         log('Collections: %s', [str(collection) for collection in metadata.collections])
         log('Actors: %s', [str(role.name) for role in metadata.roles])
-        
         log('-----------------------------------------------------------------------------')
