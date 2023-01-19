@@ -10,7 +10,7 @@ from nfo_descriptor_file import NfoDescriptorFile
 
 
 BUNDLE_NAME = "PlexNFO"
-BUNDLE_VERSION = "1.0-001"
+BUNDLE_VERSION = "1.0-002"
 
 
 # PLEX Stuff
@@ -78,12 +78,20 @@ class PLEXNFO(PlexMovieAgent):
         
         log('NFO file: %s', nfo_path)
         NFO = NfoDescriptorFile(nfo_path)
-
-        #Movie ID - Important to provide one even if not deined in NFO
-        default_id = "abc-123" # hashnig needed on file path
-        nfo_movie_id = NFO.get_id(default=default_id)
+        
         nfo_movie_title = NFO.get_title()
         nfo_movie_year = NFO.get_year()
+        nfo_movie_id = NFO.get_id()
+        
+        #Movie ID - Important to provide one even if not defined in NFO (hashing needed on file path)
+        if nfo_movie_id == None:
+            log("Autogenerating NFO ID.")
+            # if movie id doesn't exist, create one based on hash of title and year
+            def ord3(x):
+                return '%.3d' % ord(x)
+            id = int(''.join(map(ord3, nfo_movie_title+nfo_movie_year)))
+            id = str(abs(hash(int(id))))
+            nfo_movie_id = id
         
         result = Metadata(id=nfo_movie_id, name=nfo_movie_title, year=nfo_movie_year, lang=lang, score=100)
         results.Append(result)
@@ -117,14 +125,20 @@ class PLEXNFO(PlexMovieAgent):
         
         NFO = NfoDescriptorFile(nfo_path)
         metadata.title = NFO.get_title()
-        metadata.original_title = NFO.get_original_title(default=metadata.title)
-        metadata.title_sort = NFO.get_sort_title(default=metadata.title)
+        metadata.original_title = NFO.get_original_title()
+        metadata.title_sort = NFO.get_sort_title()
+        #metadata.edition_title = NFO.get_edition() #Doesn't appear to be implemented yet
         metadata.tagline = NFO.get_tagline()
         metadata.summary = NFO.get_plot()
         metadata.year = NFO.get_year()
         metadata.studio = NFO.get_studio()
         metadata.originally_available_at = NFO.get_premiered()
         metadata.rating = NFO.get_most_voted_rating()
+        try: metadata.rating_image = 'themoviedb://image.rating'
+        #try: metadata.rating_image = 'imdb://image.rating'
+        except: pass
+        metadata.audience_rating = 0.0
+        metadata.audience_rating_image = None
         
         # Duration
         metadata.duration = NFO.get_runtime() * 60 * 1000  # convert min to ms
@@ -195,6 +209,7 @@ class PLEXNFO(PlexMovieAgent):
         log('Title: %s', metadata.title)
         log('Orginal Title: %s', metadata.original_title)
         log('Sort Title: %s', metadata.title_sort)
+        #log('Edition: %s', metadata.edition)
         log('Sort Tagline: %s', metadata.tagline)
         log('Sort Summary: %s', metadata.summary)
         log('Year: %s', metadata.year)
