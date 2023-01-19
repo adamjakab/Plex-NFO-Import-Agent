@@ -81,13 +81,13 @@ class NfoDescriptorFile():
         rating_votes = 0
         ratings = self.get_unique_root_element('ratings')
         try:
-	        for rating in ratings:
-	            votes = rating.getElementsByTagName('votes')[0].firstChild.data
-	            votes = int(str(votes).strip())
-	            if (votes > rating_votes):
-	                rating_votes = votes
-	                value = rating.getElementsByTagName('value')[0].firstChild.data
-	                rating_value = float(str(value).strip())
+            for rating in ratings:
+                votes = rating.getElementsByTagName('votes')[0].firstChild.data
+                votes = int(str(votes).strip())
+                if (votes > rating_votes):
+                    rating_votes = votes
+                    value = rating.getElementsByTagName('value')[0].firstChild.data
+                    rating_value = float(str(value).strip())
         except:
             pass
         return rating_value
@@ -182,5 +182,4 @@ class NfoDescriptorFile():
     
     def get_unique_root_element(self, tagname):
         return self.nfo_movie.getElementsByTagName(tagname)
-    
     
