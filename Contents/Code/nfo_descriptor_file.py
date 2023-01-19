@@ -28,6 +28,10 @@ class NfoDescriptorFile():
     def get_original_title(self, default=None):
         return self.get_unique_root_element_value('originaltitle', default)
     
+    # Not implemented yet...
+    #def get_edition(self, default=None):
+    #    return self.get_unique_root_element_value('edition', default)
+
     def get_tagline(self, default=None):
         return self.get_unique_root_element_value('tagline', default)
     
@@ -76,14 +80,16 @@ class NfoDescriptorFile():
         rating_value = default
         rating_votes = 0
         ratings = self.get_unique_root_element('ratings')
-        for rating in ratings:
-            votes = rating.getElementsByTagName('votes')[0].firstChild.data
-            votes = int(str(votes).strip())
-            if (votes > rating_votes):
-                rating_votes = votes
-                value = rating.getElementsByTagName('value')[0].firstChild.data
-                rating_value = float(str(value).strip())
-        
+        try:
+	        for rating in ratings:
+	            votes = rating.getElementsByTagName('votes')[0].firstChild.data
+	            votes = int(str(votes).strip())
+	            if (votes > rating_votes):
+	                rating_votes = votes
+	                value = rating.getElementsByTagName('value')[0].firstChild.data
+	                rating_value = float(str(value).strip())
+        except:
+            pass
         return rating_value
     
     def get_credits(self):
